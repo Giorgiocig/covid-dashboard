@@ -3,9 +3,13 @@ import Plot from "react-plotly.js";
 export default function WorldMapChart({
   nations,
   data,
+  zmin,
+  zmax,
 }: {
   nations: string[];
   data: number[];
+  zmin?: number;
+  zmax?: number;
 }) {
   return (
     <Plot
@@ -15,6 +19,8 @@ export default function WorldMapChart({
           locationmode: data.length === 1 ? "ISO-3" : "country names",
           locations: nations,
           z: data,
+          zmin: zmin,
+          zmax: zmax,
           colorscale: [
             [0, "#E0E7FF"], // blu molto chiaro (valore minimo)
             [0.5, "#3B5BA9"], // blu medio (vicino a #1E3A8A schiarito)
