@@ -26,7 +26,7 @@ function App() {
     useFetch(selectedNation ? `${BASE_URL}?iso=${selectedNation}` : null);
 
   const tenStateWithMaxDeaths = sortAndSliceArray(data, "deaths");
-
+  console.log(tenStateWithMaxDeaths);
   const [labels, dataGraph] = computeLabelsAndDataGraphs(
     tenStateWithMaxDeaths,
     "region.iso",
@@ -38,7 +38,7 @@ function App() {
     "region.name",
     "deaths"
   );
-
+  console.log(dataGraph);
   const [allnationsLabels] = computeLabelsAndDataGraphs(data, "region.iso");
   const arrayOfUniqueLabels = [...new Set(allnationsLabels)].sort();
 
@@ -64,9 +64,7 @@ function App() {
     singleNationData,
     "confirmed"
   );
-  // morti e casi per anno per stato
-  console.log("Nation:", selectedNation);
-  console.log("Deaths data:", singleCardDeathsData);
+
   return (
     <>
       <p className="text-center text-5xl text-white bg-primary py-4">
@@ -110,29 +108,33 @@ function App() {
           value={selectedNation}
           setValue={setSelectedNation}
         />
-        <div className="flex flex-col gap-4 mt-4 items-start">
-          <CardContainer
-            properties={[
-              {
-                text: "Deaths",
-                data: singleCardDeathsData,
-                isLoading: singleNationDataIsLoading,
-              },
-              {
-                text: "Confirmed",
-                data: singleCardConfirmedCaseData,
-                isLoading: singleNationDataIsLoading,
-              },
-            ]}
-          />
-        </div>
-        <div>
-          <GraphWithLoader isLoading={singleNationDataIsLoading}>
-            <WorldMapChart
-              nations={[selectedNation]}
-              data={[singleCardDeathsData]}
+        <div className="flex">
+          <div className="flex flex-col gap-4 mt-4 items-start">
+            <CardContainer
+              properties={[
+                {
+                  text: "Deaths",
+                  data: singleCardDeathsData,
+                  isLoading: singleNationDataIsLoading,
+                },
+                {
+                  text: "Confirmed",
+                  data: singleCardConfirmedCaseData,
+                  isLoading: singleNationDataIsLoading,
+                },
+              ]}
             />
-          </GraphWithLoader>
+          </div>
+          <div>
+            <GraphWithLoader isLoading={singleNationDataIsLoading}>
+              <WorldMapChart
+                nations={[selectedNation]}
+                data={[singleCardDeathsData]}
+                zmin={Math.min(...dataGraph)}
+                zmax={Math.max(...dataGraph)}
+              />
+            </GraphWithLoader>
+          </div>
         </div>
       </div>
     </>
