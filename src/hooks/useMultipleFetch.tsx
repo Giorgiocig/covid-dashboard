@@ -12,6 +12,7 @@ export function useMultipleFetches(urls: string[]) {
     async function fetchAll() {
       setLoading(true);
       setError(null);
+      setResults([]);
 
       try {
         const data = await Promise.all(
@@ -28,7 +29,6 @@ export function useMultipleFetches(urls: string[]) {
           return;
         }
         setError(err.message);
-        setResults([]);
       } finally {
         setLoading(false);
       }
