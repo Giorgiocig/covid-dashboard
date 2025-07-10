@@ -35,7 +35,7 @@ export default function VerticalBarChart({
               standoff: 15, // <-- Aggiunge distanza tra il titolo e i tick dell’asse Y
             },
             tick0: 0,
-            dtick: 30000,
+            dtick: 100000,
           },
         }}
       />

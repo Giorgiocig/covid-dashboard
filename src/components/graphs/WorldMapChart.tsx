@@ -11,20 +11,23 @@ export default function WorldMapChart({
   zmin?: number;
   zmax?: number;
 }) {
+  console.log(nations);
   return (
     <Plot
       data={[
         {
           type: "choropleth",
-          locationmode: data.length === 1 ? "ISO-3" : "country names",
+          locationmode: "ISO-3",
           locations: nations,
           z: data,
           zmin: zmin,
           zmax: zmax,
           colorscale: [
-            [0, "#E0E7FF"], // blu molto chiaro (valore minimo)
-            [0.5, "#3B5BA9"], // blu medio (vicino a #1E3A8A schiarito)
-            [1, "#1E3A8A"], // blu scuro profondo (valore massimo)
+            [0, "#E0E7FF"],
+            [0.2, "#93C5FD"],
+            [0.5, "#3B82F6"],
+            [0.8, "#1D4ED8"],
+            [1, "#1E3A8A"],
           ],
         },
       ]}
