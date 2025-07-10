@@ -80,3 +80,77 @@ export const computeSingleCardValue = (
   }
   return singleNationData;
 };
+
+// Raggruppa i dati per codice ISO della regione
+const groupDataByRegionISO = (data: { [key: string]: any }[]) => {
+  const groupedByISO: { [key: string]: any } = {};
+  for (const record of data) {
+    const isoCode = record.region.iso;
+    if (!groupedByISO[isoCode]) {
+      groupedByISO[isoCode] = [record];
+    } else {
+      groupedByISO[isoCode].push(record);
+    }
+  }
+  return groupedByISO;
+};
+
+// Aggrega i decessi per codice ISO
+const aggregateDeathsByRegion = (groupedData: { [key: string]: any }) => {
+  for (const [isoCode, records] of Object.entries(groupedData)) {
+    if (records.length > 1) {
+      let totalDeaths = 0;
+      for (const record of records) {
+        totalDeaths += record.deaths;
+      }
+      groupedData[isoCode] = totalDeaths;
+    } else {
+      groupedData[isoCode] = records[0].deaths;
+    }
+  }
+};
+
+// Ordina i dati in ordine decrescente di decessi
+const sortByDeathsDescending = (aggregatedData: { [key: string]: any }) => {
+  return Object.fromEntries(
+    Object.entries(aggregatedData).sort(([, a], [, b]) => b - a)
+  );
+};
+
+// Prende solo i primi 10 elementi
+const getTop10RegionsByDeaths = (sortedData: { [key: string]: any }) => {
+  return Object.fromEntries(Object.entries(sortedData).slice(0, 10));
+};
+
+const extractGraphLabelsAndData = (groupedData: {
+  [key: string]: number;
+}): [string[], number[]] => {
+  const graphLabels = Object.keys(groupedData);
+  const graphData = Object.values(groupedData);
+  return [graphLabels, graphData];
+};
+
+// Funzione principale
+export const buildTopRegionsDeathsGraphData = (
+  rawData: { [key: string]: any }[]
+): [string[], number[]] => {
+  let groupedData = groupDataByRegionISO(rawData);
+  aggregateDeathsByRegion(groupedData); // modifica in-place
+  groupedData = sortByDeathsDescending(groupedData);
+  groupedData = getTop10RegionsByDeaths(groupedData);
+
+  return extractGraphLabelsAndData(groupedData);
+};
+
+export const computeLabelsAndDataForSingleNation = (
+  inputArray: { [key: string]: any }[],
+  objKey = "deaths"
+) => {
+  let labels = [];
+  let data = [];
+  for (const el of inputArray) {
+    labels.push(el.data.date);
+    data.push(el.data[objKey]);
+  }
+  return [labels, data];
+};
