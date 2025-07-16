@@ -1,12 +1,4 @@
-import {
-  ARRAY_OF_DATE,
-  buildTopRegionsDeathsGraphData,
-  computeLabelsAndDataForSingleNation,
-  computeLabelsAndDataGraphs,
-  computeSingleCardValue,
-  computeSumma,
-  formatter,
-} from "./utilities";
+import { ARRAY_OF_DATE, buildTopRegionsDeathsGraphData } from "./utilities";
 import { BASE_URL } from "./utilities";
 import { useFetch } from "./hooks/useFetch";
 import VerticalBarChart from "./components/graphs/VerticalBarChart";
@@ -19,6 +11,14 @@ import CardContainer from "./components/layout/CardContainer";
 
 import { useState, useMemo, useCallback } from "react";
 import StackedBarChart from "./components/graphs/StackBarChart";
+import { useGlobalSummaries } from "./hooks/useGlobalSummary";
+import { useSingleCardData } from "./hooks/useSingleCardData";
+import { useSingleNationChartData } from "./hooks/useSingleDataGraph";
+import { useGlobalCardProperties } from "./hooks/useGlobalCardProperties";
+import { useSingleNationCardProperties } from "./hooks/useSingleNationCardProperties";
+import { useUrlsForSelect } from "./hooks/useUrlsForSelect";
+import { useMapChartRange } from "./hooks/useMapChartRange";
+import { useArrayOfUniqueLabels } from "./hooks/useArrayOfUniqueLabels";
 
 function App() {
   const [selectedNation, setSelectedNation] = useState("AFG");
@@ -36,23 +36,12 @@ function App() {
     [data]
   );
 
-  const confirmedCasesSumma = computeSumma(data, "confirmed");
-  const deathsSumma = computeSumma(data, "deaths");
-  const singleCardDeathsData = computeSingleCardValue(
-    singleNationData,
-    "deaths"
-  );
-  const singleCardConfirmedCaseData = computeSingleCardValue(
-    singleNationData,
-    "confirmed"
-  );
+  const { confirmedCasesSumma, deathsSumma } = useGlobalSummaries(data);
+  const { singleCardDeathsData, singleCardConfirmedCaseData } =
+    useSingleCardData(singleNationData);
 
   // Memoize nation labels computation
-  const arrayOfUniqueLabels = useMemo(() => {
-    if (!data) return [];
-    const [allnationsLabels] = computeLabelsAndDataGraphs(data, "region.iso");
-    return [...new Set(allnationsLabels)].sort();
-  }, [data]);
+  const arrayOfUniqueLabels = useArrayOfUniqueLabels(data);
 
   // Memoize URLs arrays
   const urls = useMemo(
@@ -60,79 +49,35 @@ function App() {
     []
   );
 
-  const urlsForSelect = useMemo(
-    () =>
-      ARRAY_OF_DATE.map(
-        (date) => `${BASE_URL}/total?date=${date}&iso=${selectedNation}`
-      ),
-    [selectedNation]
-  );
+  const urlsForSelect = useUrlsForSelect(selectedNation);
 
   const { results: objResponseSelect } = useMultipleFetches(urlsForSelect);
   const { results: objResponse } = useMultipleFetches(urls);
 
-  const [labelsSingleNation, dataDeathSingleNation] =
-    computeLabelsAndDataForSingleNation(objResponseSelect);
-  const [_, dataConfirmedSingleNation] = computeLabelsAndDataForSingleNation(
-    objResponseSelect,
-    "confirmed"
-  );
-  // Memoize date data processing
-  const dataOfDate = useMemo(() => {
-    if (!objResponse || objResponse.length === 0) return [];
-    return objResponse.map((obj) => obj.data.deaths);
-  }, [objResponse]);
+  const {
+    labelsSingleNation,
+    dataDeathSingleNation,
+    dataConfirmedSingleNation,
+  } = useSingleNationChartData(objResponseSelect);
+
+  const dataOfDate = objResponse.map((obj) => obj.data.deaths);
 
   // Memoize card properties to prevent unnecessary re-renders
-  const globalCardProperties = useMemo(
-    () => [
-      {
-        text: "Total number of deaths",
-        data: formatter.format(deathsSumma),
-        isLoading: isLoading,
-      },
-      {
-        text: "Confirmed cases",
-        data: formatter.format(confirmedCasesSumma),
-        isLoading: isLoading,
-      },
-      {
-        text: "Most affected nation",
-        data: graphLabels[0],
-        isLoading: isLoading,
-      },
-    ],
-    [deathsSumma, confirmedCasesSumma, graphLabels, isLoading]
-  );
+  const globalCardProperties = useGlobalCardProperties({
+    deathsSumma,
+    confirmedCasesSumma,
+    graphLabels,
+    isLoading,
+  });
 
-  const singleNationCardProperties = useMemo(
-    () => [
-      {
-        text: "Deaths",
-        data: singleCardDeathsData,
-        isLoading: singleNationDataIsLoading,
-      },
-      {
-        text: "Confirmed",
-        data: singleCardConfirmedCaseData,
-        isLoading: singleNationDataIsLoading,
-      },
-    ],
-    [
-      singleCardDeathsData,
-      singleCardConfirmedCaseData,
-      singleNationDataIsLoading,
-    ]
-  );
+  const singleNationCardProperties = useSingleNationCardProperties({
+    singleCardDeathsData,
+    singleCardConfirmedCaseData,
+    singleNationDataIsLoading,
+  });
 
   // Memoize map chart data to prevent unnecessary re-calculations
-  const mapChartRange = useMemo(
-    () => ({
-      zmin: Math.min(...graphData),
-      zmax: Math.max(...graphData),
-    }),
-    [graphData]
-  );
+  const mapChartRange = useMapChartRange(graphData);
 
   // Optimize the select handler
   const handleNationChange = useCallback((value: string) => {
@@ -168,7 +113,7 @@ function App() {
           <div className="flex flex-col gap-4 mt-4 items-start">
             <CardContainer properties={singleNationCardProperties} />
           </div>
-          <div>
+          <div className="flex">
             <GraphWithLoader isLoading={singleNationDataIsLoading}>
               <WorldMapChart
                 nations={[selectedNation]}
