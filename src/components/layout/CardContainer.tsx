@@ -12,7 +12,7 @@ interface ICardContainerProps {
 
 export default function CardContainer({ properties }: ICardContainerProps) {
   return (
-    <>
+    <div className="flex justify-center gap-8">
       {properties.map((property: IProperties, indx: number) => (
         <Card
           key={indx}
@@ -21,6 +21,6 @@ export default function CardContainer({ properties }: ICardContainerProps) {
           isLoading={property.isLoading}
         />
       ))}
-    </>
+    </div>
   );
 }
