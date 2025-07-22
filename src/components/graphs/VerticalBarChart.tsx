@@ -1,4 +1,5 @@
 import Plot from "react-plotly.js";
+import { useContainerObserver } from "../../hooks/useContainerObserverRef";
 
 export default function VerticalBarChart({
   labels,
@@ -7,8 +8,9 @@ export default function VerticalBarChart({
   labels: string[];
   data: number[];
 }) {
+  const [width, containerRef] = useContainerObserver(600);
   return (
-    <>
+    <div ref={containerRef} className="w-full h-[500px]">
       <Plot
         data={[
           {
@@ -21,7 +23,7 @@ export default function VerticalBarChart({
           },
         ]}
         layout={{
-          width: 500,
+          width: width,
           height: 500,
           title: {
             text: "Top 10 nations per number of deaths",
@@ -32,13 +34,13 @@ export default function VerticalBarChart({
           yaxis: {
             title: {
               text: "Number of Deaths",
-              standoff: 15, // <-- Aggiunge distanza tra il titolo e i tick dell’asse Y
+              standoff: 15,
             },
             tick0: 0,
             dtick: 100000,
           },
         }}
       />
-    </>
+    </div>
   );
 }
