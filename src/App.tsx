@@ -7,7 +7,6 @@ import WorldMapChart from "./components/graphs/WorldMapChart";
 import Select from "./components/common/Select";
 import { useMultipleFetches } from "./hooks/useMultipleFetch";
 import CardContainer from "./components/layout/CardContainer";
-
 import { useState, useMemo, useCallback } from "react";
 import StackedBarChart from "./components/graphs/StackBarChart";
 import { useGlobalSummaries } from "./hooks/useGlobalSummary";
@@ -117,17 +116,23 @@ function App() {
             <CardContainer properties={globalCardProperties} />
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 w-full">
+            <div className="min-w-0">
+              <GraphWithSkeleton isLoading={isLoading}>
+                <VerticalBarChart labels={graphLabels} data={graphData} />
+              </GraphWithSkeleton>
+            </div>
+
             <GraphWithSkeleton isLoading={isLoading}>
-              <VerticalBarChart labels={graphLabels} data={graphData} />
+              <div className="min-w-0">
+                <LineChart labels={ARRAY_OF_DATE} data={dataOfDate} />
+              </div>
             </GraphWithSkeleton>
 
             <GraphWithSkeleton isLoading={isLoading}>
-              <LineChart labels={ARRAY_OF_DATE} data={dataOfDate} />
-            </GraphWithSkeleton>
-
-            <GraphWithSkeleton isLoading={isLoading}>
-              <WorldMapChart nations={graphLabels} data={graphData} />
+              <div className="min-w-0">
+                <WorldMapChart nations={graphLabels} data={graphData} />
+              </div>
             </GraphWithSkeleton>
           </div>
         </section>
