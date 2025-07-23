@@ -1,80 +1,57 @@
-# React + TypeScript + Vite
+🦠 COVID Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+COVID Dashboard is a modern, interactive web application that visualizes global COVID-19 data in real time. It fetches data from the COVID-API and presents key insights through dynamic charts and maps.
 
-Currently, two official plugins are available:
+The dashboard helps users understand the global impact of the pandemic, compare the most affected countries, and explore country-specific statistics through a clean, fast, and responsive interface.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+📊 Features
+🌍 Global Overview
 
-## Expanding the ESLint configuration
+Bar chart of the top 10 countries by total deaths
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Time-series graph of deaths over time
 
-```js
-export default tseslint.config([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
+World map with severity-based coloring
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+🧭 Country-Specific View
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+Select a country to display:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Location on the map with severity-based color
 
-```js
-// eslint.config.js
-import reactX from "eslint-plugin-react-x";
-import reactDom from "eslint-plugin-react-dom";
+Death timeline chart
 
-export default tseslint.config([
-  globalIgnores(["dist"]),
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs["recommended-typescript"],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+Combined chart of confirmed cases vs. deaths
 
-palette
-const covidColors = {
-totalCases: "#D9534F", // rosso medio
-newCases: "#F0AD4E", // arancione
-recovered: "#5CB85C", // verde
-deaths: "#292B2C", // grigio molto scuro
-icu: "#613d7c", // viola spento
-tests: "#5BC0DE", // azzurro
-vaccinated: "#3CB371", // verde menta
-};
+⚙️ Real-Time Data
+
+Live data via COVID-API
+
+Accurate, up-to-date metrics
+
+⚡ Optimized UX & Performance
+
+Smooth loading with skeleton screens and spinners
+
+Responsive layout for desktop and mobile
+
+Efficient data fetching with caching via TanStack Query
+
+🧱 Tech Stack
+React – UI framework
+
+TanStack Query – Data fetching and caching
+
+Zod – Schema validation
+
+React Hook Form – Forms
+
+Dash React – Charts and visualizations
+
+
+
+📄 License
+MIT
+
+📷 Screenshots 
+![Cattura](https://github.com/user-attachments/assets/62e85262-42ab-431c-b71c-237cad5c5292)
