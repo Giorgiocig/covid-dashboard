@@ -55,3 +55,5 @@ MIT
 
 📷 Screenshots 
 ![Cattura](https://github.com/user-attachments/assets/62e85262-42ab-431c-b71c-237cad5c5292)
+![Cattura](https://github.com/user-attachments/assets/cec5d34f-6f2b-4d1d-b676-a0644549605d)
+
